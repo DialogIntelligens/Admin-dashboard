@@ -1,0 +1,24 @@
+.spinning-icon {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .bg_gradient {
+    /* background: rgb(26,128,208) !important;
+    background: linear-gradient(90deg, rgba(26,128,208,1) 0%, rgba(16,87,185,1) 43%, rgba(0,185,255,1) 95%) !important; */
+    background: #4993e3 !important;
+  }
+  #chat-container {
+    height: 350px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    margin-bottom: 1rem;
+  }

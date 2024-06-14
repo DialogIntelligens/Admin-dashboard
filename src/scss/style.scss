@@ -1,0 +1,75 @@
+// If you want to override variables do it here
+@import 'variables';
+
+// Import styles
+@import '@coreui/coreui/scss/coreui';
+@import '@coreui/chartjs/scss/coreui-chartjs';
+
+// Vendors
+@import 'vendors/simplebar';
+
+// Custom styles for this theme
+@import 'theme';
+
+// If you want to add custom CSS you can put it here
+@import 'custom';
+
+.main_chat {
+  gap: 200px;
+  justify-content: flex-end  !important;
+}
+.button-custom {
+  background: #2126317a;
+  color: white;
+  transition: background 0.3s;
+}
+
+.button-custom.active {
+  background: rgb(32 33 37 / 78%);
+  color: white;
+}
+
+
+.main_btns{
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: flex-end !important;
+    margin-bottom: 10px;
+}
+.main_btns button{
+  width: 230px !important;
+    padding: 7px 25px !important;
+    outline: none !important;
+    border: none !important;
+    border-radius: 18px !important;
+    text-wrap: nowrap;
+}
+.agent_btn{
+    border: none !important;
+}
+.block_btns{
+    z-index:999;
+    position: absolute;
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+padding: 10px !important;
+}
+.block_btns button{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width:750px){
+  .main_chat{
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .main_btns{
+    display: flex;
+    flex-direction: column;
+  }
+}
