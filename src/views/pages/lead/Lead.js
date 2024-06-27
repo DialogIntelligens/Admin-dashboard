@@ -19,7 +19,6 @@ import Pagination from '../../../components/pagination/Pagination'
 const Lead = () => {
   const dispatch = useDispatch()
   const { getLead, isLoading, deleteLoader } = useSelector((state) => state?.lead)
-  console.log("getLead",getLead)
   const [Id, setId] = useState('')
   const [modal, setModal] = useState(false)
   const [page, setPage] = useState(1)
@@ -91,7 +90,7 @@ const Lead = () => {
           )}
         </CTableBody>
       </CTable>
-      {getLead?.details?.length > 0 && isLoading || (
+      {getLead?.details?.length > 0 &&  (
         <Pagination
           page={page}
           setPage={(newPage) => {

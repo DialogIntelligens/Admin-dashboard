@@ -21,8 +21,8 @@ import Pagination from '../../../components/pagination/Pagination'
 import { getAgentChatAction, getAgentChatActionTwo } from '../../../store/chat/chatThunk'
 const Agent = () => {
   const dispatch = useDispatch()
-  const { getChat, statusLoader } = useSelector((state) => state?.chat)
-  console.log("getChat",getChat)
+  const { getChat } = useSelector((state) => state?.chat)
+  const {statusLoader } = useSelector((state) => state?.agent)
   const { isLoading, user } = useSelector((state) => state?.user)
   const [modal, setModal] = useState(false)
   const [open, setOpen] = useState(false)
@@ -79,7 +79,6 @@ const Agent = () => {
           showRecord,
           onSuccess: (data) => {
             setLoadingPage(false)
-            console.log('Page data loaded for page', page)
           },
         }),
       )
@@ -89,13 +88,22 @@ const Agent = () => {
   const updateStatus = () => {
     let payload = {
       status: data?.status === 'block' ? 'active' : 'block',
-      agent_id: data?.agent_id,
+      agent_assignment_id: data?.agent_assignment_id,
     }
     dispatch(
       AgentStatusAction({
         payload,
         onSuccess: () => {
-          dispatch(getAgentAction())
+          dispatch(
+            getAgentChatAction({
+              agentId: user?.Id,
+              page,
+              showRecord,
+              onSuccess: (data) => {
+                // Handle success if needed
+              },
+            }),
+          )
           statushandler()
         },
       }),
@@ -158,7 +166,7 @@ const Agent = () => {
             )}
           </CTableBody>
         </CTable>
-        {(getChat?.details?.length > 0 && initialLoading) || loadingPage || (
+        {getChat?.details?.length > 0 && (
           <Pagination
             page={page}
             setPage={(newPage) => {
@@ -178,7 +186,7 @@ const Agent = () => {
           handler={updateStatus}
           loader={statusLoader}
           onClose={statushandler}
-          text="update"
+          text="update status"
         />
       )}
     </div>

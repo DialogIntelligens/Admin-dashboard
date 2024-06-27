@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef,useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -27,11 +27,13 @@ import {
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
-import {set} from "../store/sidebar/sidebarSlice"
+import { set } from '../store/sidebar/sidebarSlice'
+import { colorModeSlice } from '../store/user/userSlice'
 const AppHeader = () => {
-  const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
 
+  const headerRef = useRef()
+  const { colorMode, setColorMode } = useColorModes('theme')
+  const [agentName, setAgentName] = useState(null)
   const dispatch = useDispatch()
   const { sidebarShow } = useSelector((state) => state.sidebarShow)
 
@@ -41,6 +43,17 @@ const AppHeader = () => {
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
     })
   }, [])
+
+  useEffect(() => {
+    const name = localStorage.getItem('AdminName')
+    if (name && name !== 'undefined' && name !== 'null') {
+      setAgentName(name)
+    }
+  }, [])
+  const ColorModeHandler =(val)=>{
+    setColorMode(val)
+    dispatch(colorModeSlice(val))
+  }
 
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
@@ -65,21 +78,9 @@ const AppHeader = () => {
           </CNavItem> */}
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
-          {/* <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilEnvelopeOpen} size="lg" />
-            </CNavLink>
-          </CNavItem> */}
+        {agentName && (
+            <CNavItem>{agentName}</CNavItem>
+          )}
         </CHeaderNav>
         <CHeaderNav>
           <li className="nav-item py-1">
@@ -101,7 +102,7 @@ const AppHeader = () => {
                 className="d-flex align-items-center"
                 as="button"
                 type="button"
-                onClick={() => setColorMode('light')}
+                onClick={() => ColorModeHandler('light')}
               >
                 <CIcon className="me-2" icon={cilSun} size="lg" /> Light
               </CDropdownItem>
@@ -110,18 +111,9 @@ const AppHeader = () => {
                 className="d-flex align-items-center"
                 as="button"
                 type="button"
-                onClick={() => setColorMode('dark')}
+                onClick={() => ColorModeHandler('dark')}
               >
                 <CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
-              </CDropdownItem>
-              <CDropdownItem
-                active={colorMode === 'auto'}
-                className="d-flex align-items-center"
-                as="button"
-                type="button"
-                onClick={() => setColorMode('auto')}
-              >
-                <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
               </CDropdownItem>
             </CDropdownMenu>
           </CDropdown>

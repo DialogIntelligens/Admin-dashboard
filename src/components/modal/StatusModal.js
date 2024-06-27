@@ -4,7 +4,7 @@ import { ImSpinner8 } from 'react-icons/im'
 const UpdateStatus = ({ handler, open, onClose, loader,text }) => {
   return (
     <>
-      <Modal isOpen={open} toggle={onClose}>
+      <Modal isOpen={open} toggle={onClose} backdrop="static">
         <ModalHeader className='text-capitalize' toggle={onClose}>{text}</ModalHeader>
         <ModalBody>
           <p>Are you sure you want to  {text}?</p>

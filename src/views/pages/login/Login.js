@@ -21,7 +21,7 @@ import { ImSpinner8 } from 'react-icons/im'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from "react-toastify";
+
 // Define Zod schema for validation
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -49,16 +49,10 @@ const Login = () => {
     dispatch(
       loginUser({
         payload,
-        onSuccess: (data) => {
-          if (data?.Type === 'Admin') {
-            navigate('/dashboard')
-            toast.success('Successfully Login')
-            localStorage.setItem("AdminName",data?.AgentName)
-          }else{
-            toast.warning('Invalid Credentails')
-          }
+        onSuccess: () => {
+          navigate('/dashboard')
         },
-      }),
+      })
     )
   }
 
@@ -86,11 +80,9 @@ const Login = () => {
                         type="email"
                         placeholder="Email"
                         invalid={!!errors.email}
-                        className="shadow-none"
+                        className='shadow-none'
                       />
-                      {errors.email && (
-                        <div className="invalid-feedback">{errors.email.message}</div>
-                      )}
+                      {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
                     </CInputGroup>
                     <CInputGroup className="mb-4 mt-3">
                       <CInputGroupText>
@@ -101,11 +93,9 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         invalid={!!errors.password}
-                        className="shadow-none"
+                        className='shadow-none'
                       />
-                      {errors.password && (
-                        <div className="invalid-feedback">{errors.password.message}</div>
-                      )}
+                      {errors.password && <div className="invalid-feedback">{errors.password.message}</div>}
                     </CInputGroup>
                     <CRow>
                       <CCol xs={12} className="d-flex justify-content-center">

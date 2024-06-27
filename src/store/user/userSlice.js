@@ -6,12 +6,19 @@ const initialState = {
   authUser:null,
   isLoading: false,
   token: null,
+  colorMode: localStorage.getItem('theme'),
 };
 
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+
+    colorModeSlice: (state, action) => {
+      state.colorMode = action.payload;
+      localStorage.setItem('theme', action.payload);
+    },
+
     logoutUser: (state) => {
       localStorage.removeItem("authAdmin");
       state.token = null;
@@ -45,6 +52,6 @@ export const userSlice = createSlice({
   
 });
 
-export const {logoutUser,setUserDetails } = userSlice.actions;
+export const {logoutUser,setUserDetails,colorModeSlice } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -26,7 +26,7 @@ export const createAgentAction = createAsyncThunk(
 );
 export const AgentStatusAction = createAsyncThunk(
   "agent/updateStatus",
-  async ({ payload,onSuccess }, thunkAPI) => {
+  async ({ payload,onSuccess }, {thunkAPI}) => {
     try {
       const {data,status} = await axiosInstance.post(`/agent/switch-agent-status`,payload);
       if (status == 200) {
@@ -39,7 +39,7 @@ export const AgentStatusAction = createAsyncThunk(
         return thunkAPI.rejectWithValue(response);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.details || "Server error";
+      const errorMessage = error.response?.data?.details;
       toast.warning(errorMessage);
       return thunkAPI.rejectWithValue(error);
     }

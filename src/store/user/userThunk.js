@@ -9,17 +9,16 @@ export const loginUser = createAsyncThunk(
     try {
       const {data,status} = await axiosInstance.post(`/auth/login?email=${payload.email}&password=${payload.password}`);
       if (status == 200) {
-        onSuccess();
-        toast.success("Successfully Login");
+        onSuccess(data?.details);
         return data;
       }
       else {
-        toast.warning(data?.details);
+        // toast.warning(data?.details);
         return thunkAPI.rejectWithValue(response);
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.details || "Server error";
-      toast.warning(errorMessage);
+      // const errorMessage = error.response?.data?.details;
+      toast.warning(error.response?.data?.details);
       // toast.warning(data?.details);
       return thunkAPI.rejectWithValue(error);
     }

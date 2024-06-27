@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
@@ -8,7 +8,6 @@ import routes from '../routes'
 const DefaultLayout = () => {
   const dispatch = useDispatch()
   const { authUser } = useSelector((state) => state?.user)
-  // console.log('authUSER', authUser)
   const navigate = useNavigate()
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem('authAdmin'))
@@ -26,7 +25,13 @@ const DefaultLayout = () => {
         <AppHeader />
         <div className="body flex-grow-1">
           <CContainer fluid className="px-4">
-            <Suspense fallback={<CSpinner color="primary" />}>
+            <Suspense
+              fallback={
+                <div className="pt-3 d-flex justify-content-center text-center">
+                  <CSpinner color="primary" variant="grow" />
+                </div>
+              }
+            >
               <Routes>
                 {routes.map((route, idx) => {
                   return (

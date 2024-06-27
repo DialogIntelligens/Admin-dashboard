@@ -46,9 +46,9 @@ export const getAnalyticsAction = createAsyncThunk(
 
 export const getAgentChatAction = createAsyncThunk(
   "chat/getAgentChat",
-  async ({agentId,page,showRecord,onSuccess}, {thunkAPI}) => {
+  async ({page,showRecord,onSuccess}, {thunkAPI}) => {
     try {
-      const {data,status} = await axiosInstance.post(`/agent/get-all-agents?&page=${page}&page_size=${showRecord}`);
+      const {data,status} = await axiosInstance.post(`/agent/get-all-agents?page=${page}&page_size=${showRecord}`);
       if (status == 200) {
         onSuccess(data?.details);
         return data;
@@ -66,7 +66,7 @@ export const getAgentChatAction = createAsyncThunk(
 );
 export const getAgentChatActionTwo = createAsyncThunk(
   "chat/getAgentChatTwo",
-  async ({agentId,page,showRecord,onSuccess}, {thunkAPI}) => {
+  async ({page,showRecord,onSuccess,}, {thunkAPI}) => {
     try {
       const {data,status} = await axiosInstance.post(`/agent/get-all-agents?page=${page}&page_size=${showRecord}`);
       if (status == 200) {
@@ -74,6 +74,7 @@ export const getAgentChatActionTwo = createAsyncThunk(
         return data;
       }
       else {
+        // onFailure()
         toast.warning(data?.details);
         return thunkAPI.rejectWithValue(response);
       }

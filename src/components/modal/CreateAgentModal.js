@@ -31,7 +31,6 @@ const CreateAgentModal = ({ modal, toggle }) => {
 
   const onSubmit = (data) => {
     // Handle form submission
-    console.log(data)
     let payload = {
       email: data.email,
       password: data?.password,
@@ -51,7 +50,7 @@ const CreateAgentModal = ({ modal, toggle }) => {
   }
 
   return (
-    <Modal returnFocusAfterClose={modal} isOpen={modal} toggle={toggle}>
+    <Modal  isOpen={modal} toggle={toggle} backdrop="static">
       <ModalHeader toggle={toggle}>Create Agent</ModalHeader>
       <ModalBody>
         <Form onSubmit={handleSubmit(onSubmit)}>

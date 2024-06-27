@@ -12,9 +12,13 @@ import {
 } from '../../../store/chat/chatThunk'
 import ChatSkelton from '../../../components/skelton/ChatSkelton'
 import Pagination from '../../../components/pagination/Pagination'
+import NoDataFound from '../../../components/skelton/NoDataFound'
+import { useColorModes } from '@coreui/react'
+import { RxAvatar } from 'react-icons/rx'
+
 const Chat = () => {
   const dispatch = useDispatch()
-  const { isLoading, user } = useSelector((state) => state?.user)
+  const { isLoading, user,colorMode } = useSelector((state) => state?.user)
   const { getChat, chatLoader, loaderTwo } = useSelector((state) => state?.chat)
 
   const [messages, setMessages] = useState([])
@@ -22,6 +26,8 @@ const Chat = () => {
   const [file, setFile] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [showOptions, setShowOptions] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+
   const fileInputRef = useRef(null)
   const emojiPickerRef = useRef(null)
   const messagesEndRef = useRef(null)
@@ -36,6 +42,8 @@ const Chat = () => {
   const [loadingPage, setLoadingPage] = useState(false)
   const [leads, setLeads] = useState([])
   const [agent_Id, setAgentId] = useState('')
+  const [filter, setFilter] = useState([]);
+const [chatCard,setChatCard]=useState(true)
   const theme = localStorage.getItem('theme')
   let intervalId
 
@@ -55,6 +63,20 @@ const Chat = () => {
   }
 
   useEffect(() => {
+    if (getChat && getChat?.details?.length > 0 && chatCard) {
+      const initialLeads = getChat?.details[0]?.users
+      const initialLead = initialLeads[0]
+      setLeads(initialLeads)
+      setChatId(initialLead?.chat_id)
+      setUserName(initialLead?.user_name)
+      setTime(initialLead?.date_time)
+      setMessages(initialLead?.chat_history)
+      setUserId(initialLead?.user_id)
+      setSelectedChatId(initialLead?.chat_id)
+    }
+  }, [getChat])
+
+  useEffect(() => {
     if (user?.Id) {
       dispatch(
         getAgentChatAction({
@@ -62,18 +84,7 @@ const Chat = () => {
           showRecord,
           onSuccess: (data) => {
             setInitialLoading(false)
-            setAgentId(data?.[0].agent_id)
-            const chatUsers = data?.[0]?.users || []
-            setLeads(chatUsers)
-            if (chatUsers.length > 0) {
-              const firstUser = chatUsers[0]
-              setChatId(firstUser.chat_id)
-              setUserName(firstUser.user_name)
-              setTime(firstUser.date_time)
-              setMessages(firstUser.chat_history)
-              setUserId(firstUser.user_id)
-              setSelectedChatId(firstUser.chat_id)
-            }
+            setAgentId(data?.[0].agent_assignment_id)
             startTimerAPI()
           },
         }),
@@ -85,7 +96,7 @@ const Chat = () => {
       }
     }
   }, [user?.Id, page])
-  console.log('userId', userId)
+
   useEffect(() => {
     if (page >= 1 && user?.Id) {
       setLoadingPage(true)
@@ -95,7 +106,6 @@ const Chat = () => {
           showRecord,
           onSuccess: (data) => {
             setLoadingPage(false)
-            console.log('Page data loaded for page', page)
           },
         }),
       )
@@ -104,6 +114,7 @@ const Chat = () => {
 
   const handleSend = async (event) => {
     event.preventDefault()
+    setChatCard(true)
     const formData = new FormData()
     const payload = {
       message: input,
@@ -172,29 +183,36 @@ const Chat = () => {
   }, [messages])
 
   const handleUserClick = (user) => {
-    setChatId(user.chat_id)
-    setUserName(user.user_name)
-    setTime(user.date_time)
-    setMessages(user.chat_history)
-    setUserId(user.user_id)
-    setSelectedChatId(user.chat_id)
+    setChatCard(false)
+    setChatId(user?.chat_id)
+    setUserName(user?.user_name)
+    setTime(user?.date_time)
+    setMessages(user?.chat_history)
+    setUserId(user?.user_id)
+    setSelectedChatId(user?.chat_id)
   }
+
   const AgentsHandler = (item) => {
-    console.log('usereeer', item)
+    setChatCard(false)
+    setAgentId(item?.agent_assignment_id)
     setLeads(item?.users ?? [])
-    setMessages(item?.user.chat_history ?? [])
-    // setChatId(item.chat_id)
-    setUserName(item.user?.user_name ?? 'Name')
-    setTime(item?.user?.date_time ?? '00:00')
-    setMessages(item?.user?.chat_history ?? [])
+    setMessages(item?.users[0]?.chat_history)
+    setUserName(item?.users[0]?.user_name ?? 'Name')
+    setTime(item?.users[0]?.date_time ?? '00:00')
+    setMessages(item?.users[0]?.chat_history ?? [])
+    setSelectedChatId(item?.users[0]?.chat_id)
   }
-  console.log('messages', messages)
+
   useEffect(() => {
     const chatContainer = document.getElementById('chat-container')
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight
     }
   }, [messages])
+
+  // let colors = ['#A133FF','#33FF57','#FF33A1', '#A133FF',  '#FF5733', ]
+  let colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF"]
+
 
   return (
     <Container fluid className="p-3">
@@ -203,53 +221,54 @@ const Chat = () => {
       ) : (
         <Row className="justify-content-center">
           <Col md={3}>
-            <div className="input-group mb-3  border rounded">
-              <span className="input-group-text  border-0">
-                <FiSearch />
-              </span>
-              <input
-                type="text"
-                className="form-control shadow-none border-0"
-                placeholder="Search"
-              />
-            </div>
             {getChat?.details?.map((item, index) => (
-              <Card onClick={() => AgentsHandler(item)} className="mb-2">
+              <Card
+                key={index}
+                onClick={() => AgentsHandler(item)}
+                className="mb-2"
+                style={{
+                  backgroundColor:
+                    agent_Id === item.agent_assignment_id && theme === 'dark'
+                      ? '#ffffff'
+                      : agent_Id === item.agent_assignment_id && theme === 'light'
+                        ? '#212631'
+                        : '',
+
+                  color:
+                    agent_Id === item.agent_assignment_id && theme === 'dark'
+                      ? '#000000'
+                      : agent_Id === item.agent_assignment_id && theme === 'light'
+                        ? '#ffffff'
+                        : '',
+                }}
+              >
                 <CardBody>
-                  <div className="rounded mb-2" style={{ cursor: 'pointer' }}>
-                    <div className="d-flex justify-content-between">
-                      <div className="d-flex align-items-center mb-1">
-                        <Media left>
-                          <Media
-                            object
-                            src={avatar}
-                            width={40}
-                            height={40}
-                            alt="User"
-                            className="rounded-circle me-2"
-                          />
-                        </Media>
-                        <Media body>
-                          <p className="mb-0 text-capitalize">{item?.name}</p>
-                        </Media>
-                      </div>
-                      <small>
-                        {item?.date_time !== undefined && item?.date_time !== null
-                          ? item?.date_time
-                          : '00:00'}{' '}
-                      </small>
+                  <div
+                    className="rounded "
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div className="d-flex align-items-center pb-1">
+                      <Media left>
+                        <RxAvatar
+                          size={50}
+                          style={{ color: colors[index % colors.length] }}
+                          className=" me-2"
+                        />
+                      </Media>
+                      <Media body>
+                        <p className="mb-0 text-capitalize">{item?.name}</p>
+                      </Media>
                     </div>
-                    <small className={`${item.agent_last_seen === true ? '' : 'fw-bold'}`}>
-                      {item.last_message}
-                    </small>
                   </div>
                 </CardBody>
               </Card>
             ))}
           </Col>
           <Col md={4}>
-            {leads.length > 0 ? (
-              <div className="overflow-auto" style={{height:"30rem"}}>
+            {leads?.length > 0 ? (
+              <div className="overflow-auto" style={{ height: '30rem' }}>
                 {leads?.map((item, index) => (
                   <Card
                     key={index}
@@ -295,7 +314,10 @@ const Chat = () => {
                               : '00:00'}{' '}
                           </small>
                         </div>
-                        <small className={`${item.agent_last_seen === true ? '' : 'fw-bold'}`}>
+                        <small
+                          style={{ maxWidth: ' 250px' }}
+                          className={`d-inline-block text-truncate ${item.agent_last_seen === true ? '' : 'fw-bold'}`}
+                        >
                           {item.last_message}
                         </small>
                       </div>
@@ -304,7 +326,7 @@ const Chat = () => {
                 ))}
               </div>
             ) : (
-              <div>No chat found</div>
+              <NoDataFound />
             )}
           </Col>
           <Col md={5}>
@@ -391,11 +413,12 @@ const Chat = () => {
             )}
           </Col>
           <Col md={12}>
-            {(getChat?.details?.length > 0 && initialLoading) || loadingPage || (
+            {getChat?.details?.length > 0 && (
               <Pagination
                 page={page}
                 setPage={(newPage) => {
                   setPage(newPage)
+                  setChatCard(true)
                 }}
                 total={getChat?.total_agents}
                 totalPages={getChat?.total_pages}
