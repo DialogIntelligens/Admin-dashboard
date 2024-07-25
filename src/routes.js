@@ -7,6 +7,7 @@ const Chat = React.lazy(() => import('./views/pages/chat/Chat'))
 const Agent = React.lazy(() => import('./views/pages/agent/Agent'))
 const Lead = React.lazy(() => import('./views/pages/lead/Lead'))
 const ChatUI= React.lazy(()=>import('./views/pages/chat/ChatComp'))
+const AiChats= React.lazy(()=>import('./views/pages/aichats/AiChats'))
 
 const routes = [
   // { path: '/login', exact: true, name: 'login',element:Login },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/chat', name: 'Chat', element: ChatUI },
   { path: '/agents', name: 'Agent', element: Agent },
   { path: '/leads', name: 'Lead', element: Lead },
+  { path: '/aichats', name: 'AI chats', element: AiChats },
 ]
 
 export default routes

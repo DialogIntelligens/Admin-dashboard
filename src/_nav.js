@@ -15,6 +15,7 @@ import {
   cilPuzzle,
   cilSpeech,
   cilSpeedometer,
+  cilChatBubble,
   cilStar,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
@@ -52,6 +53,12 @@ const _nav = [
     name: 'Leads',
     to: '/leads',
     icon: <CIcon icon={cibMcafee} customClassName="nav-icon " />,
+  },
+  {
+    component: CNavItem,
+    name: 'AI chats',
+    to: '/aichats',
+    icon: <CIcon icon={cilChatBubble} customClassName="nav-icon " />,
   },
   // {
   //   component: CNavItem,

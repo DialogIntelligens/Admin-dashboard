@@ -1,13 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {getAnalyticsAction,getAgentChatAction,getAgentChatActionTwo } from './chatThunk'
+import {
+  getAnalyticsAction,
+  getAgentChatAction,
+  getAgentChatActionTwo,
+  getAIChatAction,
+  getAIChatActionTwo,
+} from './chatThunk'
 
 const initialState = {
   isLoading: false,
-  chatLoader:false,
-  loaderTwo:false,
+  chatLoader: false,
+  loaderTwo: false,
   getAnalytics: [],
-  getChat:[],
-  
+  getChat: [],
+  getAIChatLoader: false,
+  getAIChatLoader2: false,
+  getAIChat: [],
 }
 
 export const chatSlice = createSlice({
@@ -40,10 +48,10 @@ export const chatSlice = createSlice({
       .addCase(getAgentChatAction.rejected, (state, action) => {
         state.chatLoader = false
       })
+
       .addCase(getAgentChatActionTwo.pending, (state, action) => {
         state.loaderTwo = true
       })
-
       .addCase(getAgentChatActionTwo.fulfilled, (state, action) => {
         state.loaderTwo = false
         state.getChat = action.payload
@@ -51,9 +59,29 @@ export const chatSlice = createSlice({
       .addCase(getAgentChatActionTwo.rejected, (state, action) => {
         state.loaderTwo = false
       })
-     
+
+      .addCase(getAIChatAction.pending, (state, action) => {
+        state.getAIChatLoader = true
+      })
+      .addCase(getAIChatAction.fulfilled, (state, action) => {
+        state.getAIChatLoader = false
+        state.getAIChat = action.payload
+      })
+      .addCase(getAIChatAction.rejected, (state, action) => {
+        state.getAIChatLoader = false
+      })
+
+      .addCase(getAIChatActionTwo.pending, (state, action) => {
+        state.getAIChatLoader2 = true
+      })
+      .addCase(getAIChatActionTwo.fulfilled, (state, action) => {
+        state.getAIChatLoader2 = false
+        state.getAIChat = action.payload
+      })
+      .addCase(getAIChatActionTwo.rejected, (state, action) => {
+        state.getAIChatLoader2 = false
+      })
   },
 })
-
 
 export default chatSlice.reducer
